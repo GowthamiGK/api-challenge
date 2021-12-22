@@ -19,6 +19,7 @@ const validateJwt = async (decodedToken, request) => {
       return { isValid: false };
     }
 
+    // Return information for consumption in the routes
     return {
       isValid: true,
       credentials: {

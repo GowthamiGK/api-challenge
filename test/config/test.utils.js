@@ -20,7 +20,6 @@ if (
     await Test.resetTable("User");
     await Test.resetTable("Role");
     await Test.resetTable("UserRole");
-    await Test.sequelize.query("CREATE EXTENSION IF NOT EXISTS pgcrypto;");
     return Promise.resolve();
   };
 

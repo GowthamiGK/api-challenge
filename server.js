@@ -23,9 +23,7 @@ const serverOptions = {
     },
   },
 };
-// Run as http://userfront.test so that we can distinguish between localhost and non-localhost in Page tests
-if (process.env.NODE_ENV === "test") serverOptions.host = "userfront.test";
-if (process.env.NODE_ENV === "development") serverOptions.host = "localhost";
+if (process.env.NODE_ENV !== "production") serverOptions.host = "localhost";
 
 const server = new Hapi.Server(serverOptions);
 
