@@ -17,6 +17,11 @@ describe("should do something", () => {
       email: `admin@example.com`,
     });
     scope.adminAccessToken = await scope.adminUser.generateAccessToken();
+
+    // Add the admin role for the user
+    await Test.assignRoleForUser({ user: scope.adminUser, roleName: "admin" });
+
+    return Promise.resolve();
   });
 
   it("should read own information", async () => {

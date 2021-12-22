@@ -1,5 +1,6 @@
 "use strict";
 
+const _ = require("lodash");
 const Sequelize = require("sequelize");
 const sequelize = require("../config/sequelize/setup.js");
 
@@ -24,16 +25,29 @@ const Role = sequelize.define("Role", {
   },
 });
 
+/**
+ * Create a row in the database for each default role
+ */
+Role.createDefaultRoles = async function () {
+  return Promise.all(
+    _.map(Role.defaultRoles, async (roleName) => {
+      return Role.create({
+        name: roleName,
+      });
+    })
+  );
+};
+
 Role.defaultRoles = Object.freeze([
-  "owner",
   "admin",
   "author",
+  "contributor",
   "editor",
   "member",
-  "support",
-  "contributor",
-  "viewer",
+  "owner",
   "subscriber",
+  "support",
+  "viewer",
 ]);
 
 module.exports = Role;

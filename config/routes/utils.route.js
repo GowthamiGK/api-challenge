@@ -2,8 +2,6 @@
 
 const _ = require("lodash");
 const Boom = require("boom");
-// const Joi = require("@hapi/joi");
-// const utils = require("../../models/utils.js");
 const fns = {};
 
 fns.prefix = "v0";
