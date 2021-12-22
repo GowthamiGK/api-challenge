@@ -3,8 +3,6 @@
 const _ = require("lodash");
 const Boom = require("boom");
 // const Joi = require("@hapi/joi");
-const stripe = require("../stripe/setup.js");
-const sequelize = require("../sequelize/setup.js");
 // const utils = require("../../models/utils.js");
 const fns = {};
 
@@ -69,19 +67,6 @@ fns.handleErr = (err = {}, h) => {
 
   if (/^Sequelize/gi.test(err.name)) {
     err.message = "Problem with request";
-  }
-
-  if (err instanceof stripe.errors.StripeCardError) {
-    // Fallback to generic error if the decline code exposes customer privacy
-    if (
-      err.decline_code &&
-      _.includes(stripe.doNotReportDeclineCodes, err.decline_code)
-    ) {
-      err.message = "There was a problem with your payment information.";
-    } else {
-      // Use raw.message if message not present
-      err.message = err.message || err.raw.message;
-    }
   }
 
   return Boom.badRequest(err.message);

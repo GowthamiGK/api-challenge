@@ -1,0 +1,107 @@
+"use strict";
+
+const _ = require("lodash");
+const Sequelize = require("sequelize");
+const sequelize = require("../config/sequelize/setup.js");
+const utils = require("./utils.js");
+const jwt = require("jsonwebtoken");
+const Joi = require("@hapi/joi");
+
+const User = sequelize.define(
+  "User",
+  {
+    uuid: {
+      type: Sequelize.UUID,
+      unique: true,
+      allowNull: false,
+      defaultValue: Sequelize.UUIDV4,
+    },
+    email: {
+      type: Sequelize.STRING,
+      allowNull: false,
+      validate: {
+        isEmail(email, next) {
+          try {
+            if (email.length < 6 || email.length > 254)
+              return next(new Error("Email must be between 6-254 characters"));
+
+            const result = Joi.string().email().validate(email);
+
+            if (_.has(result, "error")) {
+              if (result.error.message === '"value" must be a valid email')
+                throw new Error("Email format is invalid");
+
+              throw result.error;
+            }
+
+            next();
+          } catch (error) {
+            throw error;
+          }
+        },
+      },
+    },
+    lastActiveAt: {
+      type: Sequelize.DATE,
+      field: "last_active_at",
+    },
+    createdAt: {
+      type: Sequelize.DATE,
+      field: "created_at",
+    },
+    updatedAt: {
+      type: Sequelize.DATE,
+      field: "updated_at",
+    },
+  },
+  {
+    classMethods: {},
+
+    instanceMethods: {
+      toJSON() {
+        return _.omit(this.get(), User.restrictedAttrs);
+      },
+      /**
+       * Create and return a JWT access token for a user
+       */
+      async generateAccessToken() {
+        const user = this;
+
+        // Set user lastActiveAt
+        await user.updateLastActiveAt();
+
+        // Construct access token
+        const accessPayload = {
+          userId: user.id,
+          userUuid: user.uuid,
+          iss: "userfront",
+        };
+
+        // Sign token
+        const accessToken = jwt.sign(
+          accessPayload,
+          {
+            key: process.env.RSA_PRIVATE_KEY,
+            // passphrase,
+          },
+          {
+            expiresIn: 2592000, // 2592000 = 30 days
+            algorithm: "RS256",
+          }
+        );
+
+        return {
+          tokens: {
+            access: {
+              value: accessToken,
+            },
+          },
+        };
+      },
+    },
+  }
+);
+
+User.restrictedAttrs = ["id", "tokens", "updatedAt"];
+
+module.exports = User;

@@ -8,7 +8,7 @@ const _ = require("lodash");
 const Hapi = require("@hapi/hapi");
 const AuthJWT = require("hapi-auth-jwt2");
 const { validateJwt } = require("./config/auth/validate.jwt.js");
-const Tenant = require("./models/pg/tenant.js");
+const User = require("./models/user.js");
 
 const serverOptions = {
   port: process.env.PORT,
@@ -19,13 +19,6 @@ const serverOptions = {
       origin: ["*"],
       credentials: true,
       maxAge: 604800, // 1 week
-      additionalHeaders: [
-        "x-requested-with",
-        "x-application-id",
-        "anymod-url",
-        "anymod-project",
-        "anymod-preview",
-      ],
     },
     files: {
       relativeTo: path.join(__dirname, "public"),
@@ -39,9 +32,9 @@ if (process.env.NODE_ENV === "development") serverOptions.host = "localhost";
 const server = new Hapi.Server(serverOptions);
 
 async function registerModels() {
-  const modelFileNames = fs.readdirSync(path.resolve(__dirname, "./models/pg"));
+  const modelFileNames = fs.readdirSync(path.resolve(__dirname, "./models"));
   modelFileNames.forEach((fileName) => {
-    require(`./models/pg/${fileName}`);
+    require(`./models/${fileName}`);
   });
 }
 
@@ -50,7 +43,7 @@ async function registerAuth() {
   // JWT
   await server.register({ plugin: AuthJWT });
   server.auth.strategy("jwt", "jwt", {
-    key: Tenant.getJwtKeys,
+    key: User.getJwtKeys,
     cookieKey: "hapi_auth_jwt2_cookie_key",
     validate: validateJwt,
     validateOptions: { payload: true },

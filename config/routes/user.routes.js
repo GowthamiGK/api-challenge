@@ -1,6 +1,6 @@
 const _ = require("lodash");
 const routeUtils = require("./utils.route.js");
-const User = require("../../models/pg/user.js");
+const User = require("../../models/user.js");
 
 module.exports = [
   // Read
