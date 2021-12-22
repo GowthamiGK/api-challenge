@@ -12,37 +12,27 @@ describe("should do something", () => {
   before(async () => {
     await Test.setupDb();
 
-    // Create a user and their JWT access token
+    // Create a user and a JWT access token for that user
     scope.adminUser = await Test.factories.user.createBasic({
       email: `admin@example.com`,
     });
-    scope.adminAccessToken = await Test.getBearerToken(user);
-
-    // Assign admin role to user
-    const adminRole = await Test.Role.find({
-      where: { name: "admin" },
-    });
-    await Test.factories.userRole.createBasic({
-      userId: scope.adminUser.id,
-      roleId: adminRole.id,
-    });
+    scope.adminAccessToken = await scope.adminUser.generateAccessToken();
   });
 
-  it("should do an API request", async () => {
-    const payload = {};
-    console.log(Test.basics);
+  it("should read own information", async () => {
     const { statusCode, result } = await server.inject({
       method: "get",
-      url: `${uri}/users/${1}`,
+      url: `${uri}/users/self`,
       headers: {
-        authorization: await Test.getBearerToken(Test.basics.user),
+        authorization: `Bearer ${scope.adminAccessToken}`,
       },
-      payload,
     });
-    expect(statusCode).to.equal(201);
-  });
+    expect(statusCode).to.equal(200);
 
-  it("Should also do this", () => {
-    expect(true).to.equal(false);
+    expect(result.id).to.equal(scope.adminUser.id);
+    expect(result.uuid).to.equal(scope.adminUser.uuid);
+    expect(result.email).to.equal(scope.adminUser.email);
+
+    return Promise.resolve();
   });
 });

@@ -61,14 +61,6 @@ if (
     });
   };
 
-  Test.getBearerToken = async (user, { prependBearerText = true } = {}) => {
-    const { tokens } = await user.generateAccessToken();
-
-    return prependBearerText
-      ? `Bearer ${tokens.access.value}`
-      : tokens.access.value;
-  };
-
   Test.resetDb = async () => {
     let deferreds = [];
     Test.modelNames.map((name) => {
@@ -76,7 +68,6 @@ if (
     });
     await Promise.all(deferreds);
     await Test.sequelize.query("CREATE EXTENSION IF NOT EXISTS pgcrypto;");
-    Test.resetSentEmails();
     return Promise.resolve();
   };
 

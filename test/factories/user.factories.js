@@ -7,16 +7,12 @@ factories.buildBasic = (data = {}) => {
   const substr = Math.random().toString().substr(-5);
   return User.build({
     email: data.email || `basic-${substr}@example.com`,
-    username: data.username || "basic-" + substr,
-    name: data.name || "Basic User " + substr,
-    data: data.data || {},
     ...data,
   });
 };
 
 factories.createBasic = async (data = {}) => {
   const user = await factories.buildBasic(data).save();
-  await user.generateAccessToken();
   return user;
 };
 

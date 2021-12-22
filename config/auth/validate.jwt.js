@@ -1,3 +1,4 @@
+const jwt = require("jsonwebtoken");
 const User = require("../../models/user.js");
 
 /**
@@ -9,7 +10,7 @@ const validateJwt = async (decodedToken, request) => {
   try {
     // Look up the user based on the decoded token
     let where = {
-      eid: decodedToken.userId,
+      uuid: decodedToken.userUuid,
     };
     const user = await User.findOne({ where });
 

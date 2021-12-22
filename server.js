@@ -4,11 +4,9 @@ require("./config/env/dotenv.js");
 
 const fs = require("fs");
 const path = require("path");
-const _ = require("lodash");
 const Hapi = require("@hapi/hapi");
 const AuthJWT = require("hapi-auth-jwt2");
 const { validateJwt } = require("./config/auth/validate.jwt.js");
-const User = require("./models/user.js");
 
 const serverOptions = {
   port: process.env.PORT,
@@ -40,14 +38,13 @@ async function registerModels() {
 
 // Auth
 async function registerAuth() {
-  // JWT
+  // JWT authentication
   await server.register({ plugin: AuthJWT });
   server.auth.strategy("jwt", "jwt", {
-    key: User.getJwtKeys,
-    cookieKey: "hapi_auth_jwt2_cookie_key",
+    key: process.env.RSA_PUBLIC_KEY,
     validate: validateJwt,
     validateOptions: { payload: true },
-    verifyOptions: { algorithms: ["RS256", "HS256"] },
+    verifyOptions: { algorithms: ["RS256"] },
   });
 
   // Default is JWT

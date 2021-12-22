@@ -3,36 +3,18 @@ const routeUtils = require("./utils.route.js");
 const User = require("../../models/user.js");
 
 module.exports = [
-  // Read
+  // Read self
   {
     method: "GET",
-    path: "/users/{userId}",
+    path: "/users/self",
     config: {
       description: "Read a user",
       tags: ["Users"],
-      // validate: {
-      //   params: Joi.object({ tenantId: joiUtils.tenantId }),
-      //   payload: joiModels.user.create.payload,
-      //   headers: joiModels.utils.headers,
-      //   failAction: joiUtils.returnValidationErrorMessage,
-      // },
-      // response: {
-      //   schema: joiModels.user.create.responses[200],
-      //   failAction: joiUtils.logValidationErrorAndContinue,
-      // }
     },
     handler: async (request, h) => {
       try {
-        // const { token } = request.auth.credentials;
-        // const user = await User.createWithPermission({
-        //   token,
-        //   tenantEid: request.params.tenantId,
-        //   payload: request.payload,
-        // });
-        const user = {
-          foo: "bar",
-        };
-        return routeUtils.replyWith.found(user, h);
+        const { user } = request.auth.credentials;
+        return routeUtils.replyWith.found(user.get(), h);
       } catch (err) {
         return routeUtils.handleErr(err, h);
       }
