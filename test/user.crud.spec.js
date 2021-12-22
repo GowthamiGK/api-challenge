@@ -3,23 +3,24 @@
 const _ = require("lodash");
 const { expect } = require("chai");
 const { server } = require("./config/test.server.js");
+const sequelize = require("../config/sequelize/setup.js");
 const Test = require("./config/test.utils.js");
 
 const uri = `${server.info.uri}/v0`;
 const scope = {};
 
-describe("should do something", () => {
+describe("User CRUD operations -", () => {
   before(async () => {
     await Test.setupDb();
 
     // Create a user and a JWT access token for that user
-    scope.adminUser = await Test.factories.user.createBasic({
-      email: `admin@example.com`,
+    scope.user = await sequelize.models.User.create({
+      email: `user@example.com`,
     });
-    scope.adminAccessToken = await scope.adminUser.generateAccessToken();
+    scope.accessToken = await scope.user.generateAccessToken();
 
     // Add the admin role for the user
-    await Test.assignRoleForUser({ user: scope.adminUser, roleName: "admin" });
+    await Test.assignRoleForUser({ user: scope.user, roleName: "admin" });
 
     return Promise.resolve();
   });
@@ -29,14 +30,14 @@ describe("should do something", () => {
       method: "get",
       url: `${uri}/users/self`,
       headers: {
-        authorization: `Bearer ${scope.adminAccessToken}`,
+        authorization: `Bearer ${scope.accessToken}`,
       },
     });
     expect(statusCode).to.equal(200);
 
-    expect(result.id).to.equal(scope.adminUser.id);
-    expect(result.uuid).to.equal(scope.adminUser.uuid);
-    expect(result.email).to.equal(scope.adminUser.email);
+    expect(result.id).to.equal(scope.user.id);
+    expect(result.uuid).to.equal(scope.user.uuid);
+    expect(result.email).to.equal(scope.user.email);
 
     return Promise.resolve();
   });

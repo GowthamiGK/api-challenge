@@ -7,6 +7,7 @@
   DELETE /model/:id   models#delete   delete the model resource
 */
 const userRoutes = require("./user.routes.js");
+const roleRoutes = require("./role.routes.js");
 
 const statusRoute = {
   method: "GET",
@@ -17,7 +18,7 @@ const statusRoute = {
   },
 };
 
-const routes = [].concat(userRoutes, statusRoute);
+const routes = [].concat(userRoutes, roleRoutes, statusRoute);
 
 module.exports = {
   routes,
