@@ -1,10 +1,8 @@
 const _ = require("lodash");
 const sequelize = require("../../config/sequelize/setup.js");
-const factories = require("../factories/index.js");
 
 const Test = {
   sequelize,
-  factories,
   basics: {},
 };
 

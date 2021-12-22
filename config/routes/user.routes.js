@@ -14,7 +14,8 @@ module.exports = [
     handler: async (request, h) => {
       try {
         const { user } = request.auth.credentials;
-        return routeUtils.replyWith.found(user.get(), h);
+        const res = await user.findComplete();
+        return routeUtils.replyWith.found(res, h);
       } catch (err) {
         return routeUtils.handleErr(err, h);
       }

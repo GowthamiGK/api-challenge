@@ -56,6 +56,25 @@ User.prototype.toJSON = function () {
 };
 
 /**
+ * Find a user along with its roles
+ *
+ * @returns {Object}
+ */
+User.prototype.findComplete = async function () {
+  const user = this;
+  const userObj = user.get();
+  const rolesResult = await sequelize.query(
+    `SELECT r.name FROM "Roles" r JOIN "UserRoles" ur ON r.id = ur.role_id WHERE ur.user_id = :userId`,
+    { replacements: { userId: user.id } }
+  );
+
+  return {
+    ...userObj,
+    roles: _.map(rolesResult[0], "name"),
+  };
+};
+
+/**
  * Create and return a JWT access token for a user
  */
 User.prototype.generateAccessToken = async function () {
