@@ -15,7 +15,7 @@ describe("User CRUD operations -", () => {
     return Promise.resolve();
   });
 
-  describe("GET /users/:userId", () => {
+  describe("GET /users/{userId}", () => {
     it("should read a given user's information if requester is an admin", async () => {});
     it("should return 401 unauthorized if requester is not an admin", async () => {});
   });
