@@ -72,6 +72,22 @@ The database has 3 tables. These are automatically created when the test suite r
 | Roles     | List of role names                      | `/models/role.js`     |
 | UserRoles | Join table for assigning roles to users | `/models/userRole.js` |
 
+### Authentication
+
+Authentication is done with a [JSON Web Token](https://userfront.com/guide/auth/jwt-json-web-token.html) (JWT) included in the `authorization` header of each request:
+
+```
+{
+  headers: {
+    authorization: "Bearer eyJhbG..."
+  }
+}
+```
+
+The server reads this token and verifies it using the `RSA_PUBLIC_KEY` found in `/config/env/test.env`.
+
+For testing, you can generate a valid token using the `user.generateAccessToken()` method. (See `/test/role.crud.spec.js` for an example)
+
 ### Node modules
 
 You can find a list of modules in `package.json`. A short description of each is below:
