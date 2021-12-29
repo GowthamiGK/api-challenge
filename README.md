@@ -39,10 +39,14 @@ Following the examples of the `/users/self` and `/roles` endpoints (see below), 
 
 `GET /users/{userId}`
 
-- [ ] This route should return information about a user. The response should be in the same format as the `/users/self` route.
+- [ ] This route should return information about the given user. The response should be in the same format as the `/users/self` route.
 - [ ] Only admin users should be able to read from this route. All other requests should receive a 401 unauthorized response. This is the same as for the `/roles` route.
 
 You can add to the test snippets for this endpoint in `/test/user.crud.spec.js`.
+
+You do not need to add any additional tests, but you may do so if you find it helpful.
+
+Once the above tests are implemented and passing, the challenge is considered to be solved.
 
 ## Additional information
 
