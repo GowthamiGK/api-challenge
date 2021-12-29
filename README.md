@@ -8,8 +8,8 @@ This repo is indicative of the style and some of the tools used at Userfront. If
 
 ## Prerequisites
 
-- Install [Node.js](https://nodejs.org/en/)
-- Install [Postgres](https://www.postgresql.org/)
+- Install [Node.js](https://nodejs.org/en/), version 12 or higher
+- Install [Postgres](https://www.postgresql.org/), version 9.6 or higher
 
 ## Setup
 
@@ -40,7 +40,9 @@ Following the examples of the `/users/self` and `/roles` endpoints (see below), 
 `GET /users/{userId}`
 
 - [ ] This route should return information about a user. The response should be in the same format as the `/users/self` route.
-- [ ] Only admin users should be able to read from this route. All other requests should receive a 401 unauthorized response.
+- [ ] Only admin users should be able to read from this route. All other requests should receive a 401 unauthorized response. This is the same as for the `/roles` route.
+
+You can add to the test snippets for this endpoint in `/test/user.crud.spec.js`.
 
 ## Additional information
 
@@ -59,3 +61,31 @@ Returns a list of roles, provided that the requester is an admin. See more about
 
 - `/test/role.crud.spec.js`
 - `/config/routes/role.routes.js`
+
+### Database setup
+
+The database has 3 tables. These are automatically created when the test suite runs:
+
+| Table     | Purpose                                 | File                  |
+| --------- | --------------------------------------- | --------------------- |
+| Users     | Basic information about users           | `/models/user.js`     |
+| Roles     | List of role names                      | `/models/role.js`     |
+| UserRoles | Join table for assigning roles to users | `/models/userRole.js` |
+
+### Node modules
+
+You can find a list of modules in `package.json`. A short description of each is below:
+
+| Module         | Description                                                                               |
+| -------------- | ----------------------------------------------------------------------------------------- |
+| @hapi/hapi     | [Hapi.js](https://hapi.dev/), a Node framework for APIs                                   |
+| @hapi/joi      | Used for validating data formats (in this case email address)                             |
+| boom           | Used to create error messages                                                             |
+| dotenv         | Used to read environment variables from `/config/env/`                                    |
+| hapi-auth-jwt2 | Hapi plugin for JWT authentication                                                        |
+| jsonwebtoken   | Library for signing & verifying JWTs ([docs](https://github.com/auth0/node-jsonwebtoken)) |
+| lodash         | [Lodash](https://lodash.com/docs) library of utility methods                              |
+| pg             | Database connection library                                                               |
+| sequelize      | [Sequelize](https://sequelize.org/v6/) ORM, for user-friendly database queries            |
+| chai           | [Chai](https://www.chaijs.com/) test assertion language                                   |
+| mocha          | [Mocha](https://mochajs.org/) test framework                                              |

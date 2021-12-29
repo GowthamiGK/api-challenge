@@ -9,6 +9,6 @@ module.exports = {
     password: null,
     host: "localhost",
     dialect: "postgres",
-    port: 5431,
+    port: 5432,
   },
 };
