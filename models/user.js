@@ -75,6 +75,38 @@ User.prototype.findComplete = async function () {
 };
 
 /**
+ * Fetch user details based on userId
+ *
+ * @returns {Object}
+ */
+ User.prototype.findUser = async function (userId) {
+  const user = this;
+
+  // Check that the user is an admin
+  const adminRole = await sequelize.models.UserRole.findOne({
+    where: { userId: user.id, roleId: 1 },
+  });
+
+  // If not an admin, reject the request
+  if (!adminRole) throw new Error("Unauthorized");
+
+  // Query to get user details
+  const userObj = await sequelize.query(
+    `SELECT u.* FROM "Users" u  WHERE u.id = :userId`,
+    { replacements: { userId: userId } }
+  );
+  const rolesResult = await sequelize.query(
+    `SELECT r.name FROM "Roles" r JOIN "UserRoles" ur ON r.id = ur.role_id WHERE ur.user_id = :userId`,
+    { replacements: { userId: userId } }
+  );
+
+  return {
+    ...userObj[0][0],
+    roles: _.map(rolesResult[0], "name"),
+  };
+};
+
+/**
  * Create and return a JWT access token for a user
  */
 User.prototype.generateAccessToken = async function () {

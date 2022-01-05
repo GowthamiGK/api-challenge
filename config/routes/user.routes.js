@@ -20,5 +20,21 @@ module.exports = [
         return routeUtils.handleErr(err, h);
       }
     },
-  },
+  }, {
+    method: "GET",
+    path: "/users/{userId}",
+    config: {
+      description: "Fetch User details",
+      tags: ["Users"],
+    },
+    handler: async (request, h) => {
+      try {
+        const { user } = request.auth.credentials;
+        const res = await user.findUser(request.params.userId);
+        return routeUtils.replyWith.found(res, h);
+      } catch (err) {
+        return routeUtils.handleErr(err, h);
+      }
+    },
+  }
 ];
